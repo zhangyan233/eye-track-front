@@ -3,10 +3,3 @@ plugins {
 alias(libs.plugins.android.application) apply false
 }
 
-//android {
-//    sourceSets {
-//        main {
-//            jniLibs.srcDirs = ['src/main/jniLibs']
-//        }
-//    }
-//}
