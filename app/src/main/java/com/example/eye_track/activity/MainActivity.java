@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.hardware.camera2.*;
 import android.media.ImageReader;
 import android.os.*;
+import android.service.autofill.UserData;
 import android.util.Base64;
 import android.util.Log;
 import android.util.Size;
@@ -25,7 +26,9 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 
 import com.example.eye_track.R;
+import com.example.eye_track.model.User;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.gson.Gson;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -68,9 +71,6 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-
-
-        //previewView.setSurfaceTextureListener(surfaceTextureListener);
         btnOpenCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupWebSocket() {
         try {
-            webSocketClient = new WebSocketClient(new URI("ws://10.0.2.2:8080/")) {
+            webSocketClient = new WebSocketClient(new URI("ws://192.168.0.179:8080/")) {
                 @Override
                 public void onOpen(ServerHandshake handshakedata) {
                     runOnUiThread(() -> Toast.makeText(MainActivity.this, "WebSocket Connected", Toast.LENGTH_SHORT).show());
@@ -166,7 +166,8 @@ public class MainActivity extends AppCompatActivity {
                         ByteBuffer buffer = image.getPlanes()[0].getBuffer();
                         byte[] bytes = new byte[buffer.remaining()];
                         buffer.get(bytes);
-                        sendImageToServer(bytes);
+
+                        sendImageToServer(bytes,"testUser1",25,1);
                         image.close();
                     }
 
@@ -179,11 +180,13 @@ public class MainActivity extends AppCompatActivity {
         }, 0, 30, TimeUnit.MILLISECONDS);
     }
 
-    private void sendImageToServer(byte[] imageData) {
+    private void sendImageToServer(byte[] imageData,String userId,int age,int gender) {
         imageProcessingExecutor.execute(()->{
-            String base64Image = Base64.encodeToString(imageData, Base64.DEFAULT);
+            User user=new User(userId,imageData,age,gender);
+            Gson gson=new Gson();
+            String json = gson.toJson(user);
             if (webSocketClient != null && webSocketClient.isOpen()) {
-                webSocketClient.send(base64Image);
+                webSocketClient.send(json);
                 Log.d("WebSocket", "Sending image data");
             }
         });
