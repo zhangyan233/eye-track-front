@@ -23,18 +23,10 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.camera.core.CameraSelector;
-import androidx.camera.core.ImageCapture;
-import androidx.camera.core.ImageCaptureException;
-import androidx.camera.core.ImageProxy;
-import androidx.camera.core.Preview;
-import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.lifecycle.LifecycleOwner;
 
 import com.example.eye_track.R;
-import com.example.eye_track.model.User;
+import com.example.eye_track.model.PredictionUser;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
@@ -76,7 +68,6 @@ public class PredictionActivity extends AppCompatActivity {
     private static final Logger log = LoggerFactory.getLogger(PredictionActivity.class);
 
     private PlayerView playerView;
-    private TextureView textureView;
     private SimpleExoPlayer player;
     private WebSocketClient webSocketClient;
     private CameraDevice cameraDevice;
@@ -84,8 +75,8 @@ public class PredictionActivity extends AppCompatActivity {
     private Handler backgroundHandler;
     private HandlerThread backgroundThread;
     private ImageReader imageReader;
-    private boolean isCapturing;
-        private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
+    private boolean isCapturing=false;
+    private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
 
     private final BlockingQueue<byte[]> imageQueue = new LinkedBlockingQueue<byte[]>();
 
@@ -176,7 +167,7 @@ public class PredictionActivity extends AppCompatActivity {
         try {
             String cameraId = manager.getCameraIdList()[1]; // 使用前置摄像头
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
-            imageReader = ImageReader.newInstance(640, 480, ImageFormat.JPEG, 2);
+            imageReader = ImageReader.newInstance(320, 240, ImageFormat.JPEG, 10);
             imageReader.setOnImageAvailableListener(onImageAvailableListener, backgroundHandler);
 
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -219,6 +210,7 @@ public class PredictionActivity extends AppCompatActivity {
             cameraDevice.createCaptureSession(Arrays.asList(imageReader.getSurface()), new CameraCaptureSession.StateCallback() {
                 @Override
                 public void onConfigured(@NonNull CameraCaptureSession session) {
+                    Log.i("Capture","******start capture*******");
                     captureSession = session;
                     startImageCapture();
                 }
@@ -235,7 +227,7 @@ public class PredictionActivity extends AppCompatActivity {
 
     private void startImageCapture() {
         isCapturing = true;
-        executorService = Executors.newScheduledThreadPool(1);
+        executorService = Executors.newScheduledThreadPool(4);
         executorService.scheduleWithFixedDelay(this::captureStillPicture, 0, 33, TimeUnit.MILLISECONDS); // 每秒30帧
     }
 
@@ -244,6 +236,8 @@ public class PredictionActivity extends AppCompatActivity {
         try {
             CaptureRequest.Builder builder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
             builder.addTarget(imageReader.getSurface());
+            builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
+            builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
             captureSession.capture(builder.build(), null, backgroundHandler);
         } catch (CameraAccessException e) {
             e.printStackTrace();
@@ -266,13 +260,13 @@ public class PredictionActivity extends AppCompatActivity {
 
     private void sendImage(byte[] image) {
         Runnable sendTask = () -> {
-            User user = new User("testUser1", image, 25, 1);
+            PredictionUser user = new PredictionUser("testUser1", image, 25, 1);
             Gson gson = new Gson();
             String json = gson.toJson(user);
             byte[] jsonBytes = json.getBytes(StandardCharsets.UTF_8);
 
             if (webSocketClient != null && webSocketClient.isOpen()) {
-                Log.i("send","开始发送了");
+                Log.i("send","********start send*********");
                 webSocketClient.send(jsonBytes);
             }
         };
@@ -298,6 +292,7 @@ public class PredictionActivity extends AppCompatActivity {
         executorService.shutdown();
         stopBackgroundThread();
         webSocketClient.close();
+        player.stop();
     }
 
     private void stopBackgroundThread() {

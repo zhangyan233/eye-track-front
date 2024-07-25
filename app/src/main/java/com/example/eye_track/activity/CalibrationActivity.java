@@ -30,43 +30,20 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.camera.core.CameraSelector;
-import androidx.camera.core.ImageCapture;
-import androidx.camera.core.ImageCaptureException;
-import androidx.camera.core.ImageProxy;
-import androidx.camera.core.Preview;
-import androidx.camera.lifecycle.ProcessCameraProvider;
-import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.lifecycle.LifecycleOwner;
 
 import com.example.eye_track.R;
-import com.example.eye_track.model.User;
-import com.google.common.util.concurrent.ListenableFuture;
+import com.example.eye_track.model.CalibrationUser;
 import com.google.gson.Gson;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -249,13 +226,13 @@ public class CalibrationActivity extends AppCompatActivity {
         try {
             SurfaceTexture texture = textureView.getSurfaceTexture();
             assert texture != null;
-            texture.setDefaultBufferSize(320, 180);
+            texture.setDefaultBufferSize(320, 240);
             Surface surface = new Surface(texture);
 
             previewRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
             previewRequestBuilder.addTarget(surface);
 
-            imageReader = ImageReader.newInstance(320, 180, ImageFormat.JPEG, 10);
+            imageReader = ImageReader.newInstance(320, 240, ImageFormat.JPEG, 10);
             imageReader.setOnImageAvailableListener(onImageAvailableListener, imageHandler);
 
             cameraDevice.createCaptureSession(Arrays.asList(surface, imageReader.getSurface()), new CameraCaptureSession.StateCallback() {
@@ -299,13 +276,14 @@ public class CalibrationActivity extends AppCompatActivity {
         try {
             CaptureRequest.Builder builder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
             builder.addTarget(imageReader.getSurface());
-             builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
+            builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
             builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
 
             captureSession.capture(builder.build(), new CameraCaptureSession.CaptureCallback() {
                 @Override
                 public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
                     super.onCaptureCompleted(session, request, result);
+                    Log.i("capture","start capturing");
                 }
             }, imageHandler);
         } catch (CameraAccessException e) {
@@ -336,13 +314,13 @@ public class CalibrationActivity extends AppCompatActivity {
 
     private void sendImage(byte[] image) {
         Runnable sendTask = () -> {
-            User user = new User("testUser1", image, 25, 1);
+            CalibrationUser user = new CalibrationUser("testUser1", image, 25, 1, new int[]{200, 256});
             Gson gson = new Gson();
             String json = gson.toJson(user);
             byte[] jsonBytes = json.getBytes(StandardCharsets.UTF_8);
 
             if (webSocketClient != null && webSocketClient.isOpen()) {
-                Log.i("send","开始发送了");
+                Log.i("send","start sending");
                 webSocketClient.send(jsonBytes);
             }
         };
