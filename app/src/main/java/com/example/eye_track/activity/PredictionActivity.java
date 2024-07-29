@@ -3,6 +3,8 @@ package com.example.eye_track.activity;
 import static android.content.ContentValues.TAG;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -60,6 +62,7 @@ import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
 import android.view.TextureView;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -69,21 +72,31 @@ public class PredictionActivity extends AppCompatActivity {
 
     private PlayerView playerView;
     private SimpleExoPlayer player;
+    private Button showResult;
     private WebSocketClient webSocketClient;
     private CameraDevice cameraDevice;
     private CameraCaptureSession captureSession;
     private Handler backgroundHandler;
     private HandlerThread backgroundThread;
     private ImageReader imageReader;
-    private boolean isCapturing=false;
+    private boolean isCapturing=true;
     private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
 
-    private final BlockingQueue<byte[]> imageQueue = new LinkedBlockingQueue<byte[]>();
+    public String videoUrl;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_prediction);
+
+        showResult=findViewById(R.id.show_result);
+        showResult.setOnClickListener(v -> {
+            isCapturing=false;
+            Intent intent = new Intent(PredictionActivity.this, ShowResultActivity.class);
+            intent.putExtra("videoUrl",videoUrl);
+            startActivity(intent);
+        });
 
         if (ActivityCompat.checkSelfPermission(PredictionActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(PredictionActivity.this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
@@ -111,7 +124,7 @@ public class PredictionActivity extends AppCompatActivity {
             public void onMessage(String message) {
                 Log.i("WebSocket", "Message received: " + message);
                 if (message.startsWith("VideoURL:")) {
-                    String videoUrl = message.substring("VideoURL:".length());
+                    videoUrl = message.substring("VideoURL:".length());
                     log.info("------------------------"+videoUrl);
                     runOnUiThread(() -> initializePlayer(videoUrl));
                 }
@@ -247,13 +260,15 @@ public class PredictionActivity extends AppCompatActivity {
     private final ImageReader.OnImageAvailableListener onImageAvailableListener = new ImageReader.OnImageAvailableListener() {
         @Override
         public void onImageAvailable(ImageReader reader) {
-            Image image = reader.acquireNextImage();
-            if (image != null) {
-                ByteBuffer buffer = image.getPlanes()[0].getBuffer();
-                byte[] bytes = new byte[buffer.remaining()];
-                buffer.get(bytes);
-                sendImage(bytes);
-                image.close();
+            if(isCapturing){
+                Image image = reader.acquireNextImage();
+                if (image != null) {
+                    ByteBuffer buffer = image.getPlanes()[0].getBuffer();
+                    byte[] bytes = new byte[buffer.remaining()];
+                    buffer.get(bytes);
+                    sendImage(bytes);
+                    image.close();
+                }
             }
         }
     };
@@ -292,7 +307,7 @@ public class PredictionActivity extends AppCompatActivity {
         executorService.shutdown();
         stopBackgroundThread();
         webSocketClient.close();
-        player.stop();
+        player.release();
     }
 
     private void stopBackgroundThread() {
