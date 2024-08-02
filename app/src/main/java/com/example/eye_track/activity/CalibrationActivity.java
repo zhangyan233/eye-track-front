@@ -47,6 +47,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+//responsible for calibration step, including open front camera, preview and capture images
 public class CalibrationActivity extends AppCompatActivity {
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 1;
 
@@ -76,15 +77,13 @@ public class CalibrationActivity extends AppCompatActivity {
         textureView = findViewById(R.id.texture_view);
         btnCapture = findViewById(R.id.button_capture);
 
-        //webExecutors=Executors.newSingleThreadExecutor();
+        //Start background thread for camera
         startBackgroundThread();
-
 
         // Initialize WebSocket
         initializeWebSocket();
 
-        // Start background thread for camera
-
+        // as entering this activity, open front camera
         textureView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
             @Override
             public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
@@ -103,6 +102,7 @@ public class CalibrationActivity extends AppCompatActivity {
             public void onSurfaceTextureUpdated(SurfaceTexture surface) {}
         });
 
+        //control button to start capture and stop capture
         btnCapture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,38 +115,40 @@ public class CalibrationActivity extends AppCompatActivity {
         });
     }
 
-        private void initializeWebSocket() {
-            new Thread(()->{
-                try {
-                    webSocketClient = new WebSocketClient(new URI("ws://192.168.0.179:8080/")) {
-                        @Override
-                        public void onOpen(ServerHandshake handshakedata) {
-                            runOnUiThread(() -> Toast.makeText(CalibrationActivity.this, "WebSocket Connected", Toast.LENGTH_SHORT).show());
-                        }
+    //initialize websocket connection
+    private void initializeWebSocket() {
+        new Thread(()->{
+            try {
+                webSocketClient = new WebSocketClient(new URI("ws://192.168.0.179:8080/")) {
+                    @Override
+                    public void onOpen(ServerHandshake handshakedata) {
+                        //runOnUiThread(() -> Toast.makeText(CalibrationActivity.this, "WebSocket Connected", Toast.LENGTH_SHORT).show());
+                    }
 
-                        @Override
-                        public void onMessage(String message) {
-                            // Here you might handle messages coming from the server if necessary
-                        }
+                    @Override
+                    public void onMessage(String message) {
+                        // Here you might handle messages coming from the server if necessary
+                    }
 
-                        @Override
-                        public void onError(Exception ex) {
-                            runOnUiThread(() -> Toast.makeText(CalibrationActivity.this, "WebSocket error: " + ex.getMessage(), Toast.LENGTH_SHORT).show());
-                        }
+                    @Override
+                    public void onError(Exception ex) {
+                        runOnUiThread(() -> Toast.makeText(CalibrationActivity.this, "WebSocket error: " + ex.getMessage(), Toast.LENGTH_SHORT).show());
+                    }
 
-                        @Override
-                        public void onClose(int code, String reason, boolean remote) {
-                            runOnUiThread(() -> Toast.makeText(CalibrationActivity.this, "WebSocket closed: " + reason, Toast.LENGTH_SHORT).show());
-                        }
-                    };
-                    webSocketClient.connect();
-                } catch (Exception e) {
-                    Toast.makeText(this, "WebSocket setup error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }).start();
+                    @Override
+                    public void onClose(int code, String reason, boolean remote) {
+                        runOnUiThread(() -> Toast.makeText(CalibrationActivity.this, "WebSocket closed: " + reason, Toast.LENGTH_SHORT).show());
+                    }
+                };
+                webSocketClient.connect();
+            } catch (Exception e) {
+                Toast.makeText(this, "WebSocket setup error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }).start();
 
     }
 
+    //introduce specific thread to run camera and capture images
     private void startBackgroundThread() {
         backgroundThread = new HandlerThread("CameraBackground");
         backgroundThread.start();
@@ -155,10 +157,9 @@ public class CalibrationActivity extends AppCompatActivity {
         imageHandlerThread = new HandlerThread("ImageHandlerThread");
         imageHandlerThread.start();
         imageHandler = new Handler(imageHandlerThread.getLooper());
-
-
     }
 
+    //stop background threads
     private void stopBackgroundThread() {
         if (backgroundThread != null) {
             backgroundThread.quitSafely();
@@ -184,13 +185,11 @@ public class CalibrationActivity extends AppCompatActivity {
 
     }
 
+    // open front camera
     private void openCamera() {
         CameraManager manager = (CameraManager) getSystemService(CAMERA_SERVICE);
         try {
             String cameraId = manager.getCameraIdList()[1]; // 1 indicates front camera
-//            CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
-//            StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
-//            Size previewSize = map.getOutputSizes(SurfaceTexture.class)[0];
 
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 1);
@@ -202,6 +201,7 @@ public class CalibrationActivity extends AppCompatActivity {
         }
     }
 
+    //some operations toward front camera
     private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback() {
         @Override
         public void onOpened(@NonNull CameraDevice camera) {
@@ -222,6 +222,9 @@ public class CalibrationActivity extends AppCompatActivity {
         }
     };
 
+    //determine which views can get information from front camera
+    //surface: screen, make users can preview content from front camera
+    //imagereader: capture images which means read content from imagereader
     private void createCameraPreviewSession() {
         try {
             SurfaceTexture texture = textureView.getSurfaceTexture();
@@ -255,6 +258,7 @@ public class CalibrationActivity extends AppCompatActivity {
         }
     }
 
+    // start capture
     private void startImageCapture() {
         isCapturing = true;
         btnCapture.setText("Stop Capture");
@@ -262,6 +266,7 @@ public class CalibrationActivity extends AppCompatActivity {
         captureExecutorService.scheduleWithFixedDelay(this::captureStillPicture, 0, 33, TimeUnit.MILLISECONDS); // 每秒30帧
     }
 
+    //stop capture
     private void stopImageCapture() {
         isCapturing = false;
         btnCapture.setText("Start Capture");
@@ -270,6 +275,7 @@ public class CalibrationActivity extends AppCompatActivity {
         }
     }
 
+    //detailed operations while capturing images
     private void captureStillPicture() {
         if (cameraDevice == null || !isCapturing) return;
 
@@ -291,6 +297,7 @@ public class CalibrationActivity extends AppCompatActivity {
         }
     }
 
+    //get image from imageReader
     private final ImageReader.OnImageAvailableListener onImageAvailableListener = new ImageReader.OnImageAvailableListener() {
         @Override
         public void onImageAvailable(ImageReader reader) {
@@ -309,9 +316,7 @@ public class CalibrationActivity extends AppCompatActivity {
         }
     };
 
-
-
-
+    // send image to websocket server
     private void sendImage(byte[] image) {
         Runnable sendTask = () -> {
             CalibrationUser user = new CalibrationUser("testUser1", image, 25, 1, new int[]{200, 256});
@@ -327,6 +332,7 @@ public class CalibrationActivity extends AppCompatActivity {
         new Thread(sendTask).start();
     }
 
+    //get privilege to use camera
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

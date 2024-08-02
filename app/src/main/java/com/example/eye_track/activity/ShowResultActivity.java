@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.eye_track.R;
 import com.example.eye_track.view.HeatmapView;
+import com.example.eye_track.view.OverlayView;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
@@ -24,6 +25,7 @@ import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +37,8 @@ public class ShowResultActivity extends AppCompatActivity {
     private static final Logger log = LoggerFactory.getLogger(ShowResultActivity.class);
     private PlayerView playerView;
     private SimpleExoPlayer player;
-    private HeatmapView heatmapView;
+    //private HeatmapView heatmapView;
+    private OverlayView overlayView;
     private WebSocketClient webSocketClient;
 
     @SuppressLint("MissingInflatedId")
@@ -47,12 +50,14 @@ public class ShowResultActivity extends AppCompatActivity {
         player=new SimpleExoPlayer.Builder(this).build();
         playerView=findViewById(R.id.playerView);
         playerView.setPlayer(player);
-        heatmapView = findViewById(R.id.heatmapView);
+        overlayView=findViewById(R.id.overlay_view);
+        //heatmapView = findViewById(R.id.heatmapView);
 
         initializeWebSocket();
         runOnUiThread(()->playVideo());
     }
 
+    //initialize the websocket
     private void initializeWebSocket() {
         new Thread(()->{
             try {
@@ -66,8 +71,10 @@ public class ShowResultActivity extends AppCompatActivity {
                     @Override
                     public void onMessage(String message) {
                         // Here you might handle messages coming from the server if necessary
-                        Map<String, Integer> newCoordinates = parseCoordinatesFromMessage(message);
-                        runOnUiThread(() -> heatmapView.updateCoordinates(newCoordinates));
+//                        Map<String, Integer> newCoordinates = parseCoordinatesFromMessage(message);
+//                        runOnUiThread(() -> heatmapView.updateCoordinates(newCoordinates));
+                        Float[] coordinates=parseCoordinatesFromMessages(message);
+                        runOnUiThread(()->overlayView.updatePoint(coordinates[0],coordinates[1]));
                     }
 
                     @Override
@@ -88,6 +95,7 @@ public class ShowResultActivity extends AppCompatActivity {
 
     }
 
+    //start to play videos when starting this activity
     private void playVideo() {
         String videoUri = getIntent().getStringExtra("videoUrl");
         Log.i("URL",videoUri);
@@ -104,23 +112,37 @@ public class ShowResultActivity extends AppCompatActivity {
         });
     }
 
-    private Map<String, Integer> parseCoordinatesFromMessage(String message) {
-        Map<String, Integer> coordinates = new HashMap<>();
+//    private Map<String, Integer> parseCoordinatesFromMessage(String message) {
+//        Map<String, Integer> coordinates = new HashMap<>();
+//        try {
+//            JSONArray jsonArray = new JSONArray(message);
+//            for (int i = 0; i < jsonArray.length(); i++) {
+//                JSONArray coordArray = jsonArray.getJSONArray(i);
+//                String coord = coordArray.getDouble(0) + "," + coordArray.getDouble(1);
+//                if (coordinates.containsKey(coord)) {
+//                    coordinates.put(coord, coordinates.get(coord) + 1);
+//                } else {
+//                    coordinates.put(coord, 1);
+//                }
+//            }
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        return coordinates;
+//    }
+
+    //get coordinates server sends to client
+    private Float[] parseCoordinatesFromMessages(String message){
+        Float[] res=new Float[2];
         try {
-            JSONArray jsonArray = new JSONArray(message);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONArray coordArray = jsonArray.getJSONArray(i);
-                String coord = coordArray.getDouble(0) + "," + coordArray.getDouble(1);
-                if (coordinates.containsKey(coord)) {
-                    coordinates.put(coord, coordinates.get(coord) + 1);
-                } else {
-                    coordinates.put(coord, 1);
-                }
-            }
+            JSONObject jsonObject=new JSONObject(message);
+            res[0] = (float) jsonObject.getDouble("x");
+            res[1] = (float) jsonObject.getDouble("y");
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return coordinates;
+        return res;
+
     }
 }
 

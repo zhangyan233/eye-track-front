@@ -14,14 +14,22 @@
         tools:layout_editor_absoluteY="228dp"
         tools:ignore="MissingConstraints" />
 
-    <com.example.eye_track.view.HeatmapView
-        android:id="@+id/heatmapView"
+<!--    <com.example.eye_track.view.HeatmapView-->
+<!--        android:id="@+id/heatmapView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="720px"-->
+<!--        android:layout_gravity="center"-->
+
+<!--        tools:layout_editor_absoluteX="0dp"-->
+<!--        tools:layout_editor_absoluteY="228dp"-->
+<!--        tools:ignore="MissingConstraints" />-->
+
+    <com.example.eye_track.view.OverlayView
+        android:id="@+id/overlay_view"
         android:layout_width="match_parent"
         android:layout_height="720px"
         android:layout_gravity="center"
-
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="228dp"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintBottom_toBottomOf="@+id/playerView"
+        app:layout_constraintTop_toTopOf="@+id/playerView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

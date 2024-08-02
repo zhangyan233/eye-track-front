@@ -66,6 +66,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+//responsible for prediction step, including get and play video from backend, and capture images
+// if want to just capture images without playing videos and previewing camera content, just deprive the video part in this activity
+
 public class PredictionActivity extends AppCompatActivity {
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 1;
     private static final Logger log = LoggerFactory.getLogger(PredictionActivity.class);
@@ -90,6 +93,7 @@ public class PredictionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_prediction);
 
+        // transfer to next step: show results
         showResult=findViewById(R.id.show_result);
         showResult.setOnClickListener(v -> {
             isCapturing=false;
@@ -103,6 +107,7 @@ public class PredictionActivity extends AppCompatActivity {
             return;
         }
 
+        ////when starting this activity, requiring video url from server, and play it
         playerView=findViewById(R.id.playerView);
         URI uri;
         try {
@@ -145,12 +150,14 @@ public class PredictionActivity extends AppCompatActivity {
 
     }
 
+    //use a specific thread to control camera and start capture pictures
     private void initialize() {
         startBackgroundThread();
         startCameraCapture();
 
     }
 
+    //initialize player
     private void initializePlayer(String videoUrl) {
         player = new SimpleExoPlayer.Builder(this).build();
         playerView.setPlayer(player);
@@ -175,6 +182,7 @@ public class PredictionActivity extends AppCompatActivity {
         backgroundHandler = new Handler(backgroundThread.getLooper());
     }
 
+    //start camera
     private void startCameraCapture() {
         CameraManager manager = (CameraManager) getSystemService(CAMERA_SERVICE);
         try {
@@ -195,6 +203,7 @@ public class PredictionActivity extends AppCompatActivity {
         }
     }
 
+    //operations attach to camera
     private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback() {
         @Override
         public void onOpened(@NonNull CameraDevice camera) {
@@ -215,6 +224,7 @@ public class PredictionActivity extends AppCompatActivity {
         }
     };
 
+    //allow imagereader can get the content of front camera
     private void createCameraCaptureSession() {
         try {
             CaptureRequest.Builder builder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
@@ -225,7 +235,7 @@ public class PredictionActivity extends AppCompatActivity {
                 public void onConfigured(@NonNull CameraCaptureSession session) {
                     Log.i("Capture","******start capture*******");
                     captureSession = session;
-                    startImageCapture();
+                    startImageCapture();//start to capture which starting front camera and make imagereader can get the content of this camera
                 }
 
                 @Override
@@ -244,6 +254,7 @@ public class PredictionActivity extends AppCompatActivity {
         executorService.scheduleWithFixedDelay(this::captureStillPicture, 0, 33, TimeUnit.MILLISECONDS); // 每秒30帧
     }
 
+    //details about how to capture
     private void captureStillPicture() {
         if (cameraDevice == null) return;
         try {
@@ -257,6 +268,7 @@ public class PredictionActivity extends AppCompatActivity {
         }
     }
 
+    //get image info from imageReader
     private final ImageReader.OnImageAvailableListener onImageAvailableListener = new ImageReader.OnImageAvailableListener() {
         @Override
         public void onImageAvailable(ImageReader reader) {
@@ -273,6 +285,7 @@ public class PredictionActivity extends AppCompatActivity {
         }
     };
 
+    //send image to websocket
     private void sendImage(byte[] image) {
         Runnable sendTask = () -> {
             PredictionUser user = new PredictionUser("testUser1", image, 25, 1);
