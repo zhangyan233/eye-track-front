@@ -46,7 +46,9 @@ import java.io.ByteArrayOutputStream;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -62,6 +64,8 @@ import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
 import android.view.TextureView;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -84,13 +88,15 @@ public class PredictionActivity extends AppCompatActivity {
     private ImageReader imageReader;
     private boolean isCapturing=true;
     private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
-
+    private List<String> videoUrls = new ArrayList<>();
     public String videoUrl;
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_prediction);
 
         // transfer to next step: show results
@@ -128,10 +134,12 @@ public class PredictionActivity extends AppCompatActivity {
             @Override
             public void onMessage(String message) {
                 Log.i("WebSocket", "Message received: " + message);
-                if (message.startsWith("VideoURL:")) {
-                    videoUrl = message.substring("VideoURL:".length());
-                    log.info("------------------------"+videoUrl);
-                    runOnUiThread(() -> initializePlayer(videoUrl));
+                if (message.startsWith("VideoURLs:")) {
+                    String[] urls = message.substring("VideoURLs:".length()).split(",");
+                    for (String url : urls) {
+                        videoUrls.add(url.trim());
+                    }
+                    runOnUiThread(() -> initializePlayer(videoUrls));
                 }
             }
 
@@ -157,18 +165,27 @@ public class PredictionActivity extends AppCompatActivity {
 
     }
 
-    //initialize player
-    private void initializePlayer(String videoUrl) {
+    private void initializePlayer(List<String> videoUrls) {
         player = new SimpleExoPlayer.Builder(this).build();
         playerView.setPlayer(player);
-        MediaItem mediaItem = new MediaItem.Builder()
-                .setUri(videoUrl)
-                .build();
-        player.setMediaItem(mediaItem);
+
+        for (String videoUrl : videoUrls) {
+            MediaItem mediaItem = new MediaItem.Builder().setUri(videoUrl).build();
+            player.addMediaItem(mediaItem);
+        }
+
         player.prepare();
         player.play();
 
         player.addListener(new ExoPlayer.Listener() {
+            @Override
+            public void onPlaybackStateChanged(int playbackState) {
+                if (playbackState == ExoPlayer.STATE_ENDED) {
+                    stopImageCapture();
+
+                }
+            }
+
             @Override
             public void onPlayerError(ExoPlaybackException error) {
                 Log.e(TAG, "Playback error: ", error);
@@ -254,6 +271,13 @@ public class PredictionActivity extends AppCompatActivity {
         executorService.scheduleWithFixedDelay(this::captureStillPicture, 0, 33, TimeUnit.MILLISECONDS); // 每秒30帧
     }
 
+    private void stopImageCapture() {
+        isCapturing = false;
+        if (executorService != null && !executorService.isShutdown()) {
+            executorService.shutdownNow();
+        }
+    }
+
     //details about how to capture
     private void captureStillPicture() {
         if (cameraDevice == null) return;
@@ -262,6 +286,8 @@ public class PredictionActivity extends AppCompatActivity {
             builder.addTarget(imageReader.getSurface());
             builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
             builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
+            builder.set(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, 3); // 设置曝光补偿
+            builder.set(CaptureRequest.SENSOR_SENSITIVITY, 800);
             captureSession.capture(builder.build(), null, backgroundHandler);
         } catch (CameraAccessException e) {
             e.printStackTrace();

@@ -30,8 +30,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.CalibrationActivity"></activity>
-        <activity android:name=".activity.PredictionActivity"></activity>
+        <activity android:name=".activity.CalibrationActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="sensor"></activity>
+        <activity android:name=".activity.PredictionActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="sensor"></activity>
         <activity android:name=".activity.ShowResultActivity"></activity>
 
     </application>

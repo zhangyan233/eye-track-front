@@ -1,3 +1,4 @@
+
 package com.example.eye_track.activity;
 
 
@@ -7,6 +8,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
+import android.graphics.Matrix;
+import android.graphics.RectF;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -22,6 +25,7 @@ import android.media.ImageReader;
 import android.os.*;
 import android.util.Log;
 import android.util.Size;
+import android.util.SparseIntArray;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
@@ -65,8 +69,13 @@ public class CalibrationActivity extends AppCompatActivity {
     private Handler imageHandler;
     private HandlerThread imageHandlerThread;
 
-    private Handler previewHandler;
-    private HandlerThread previewThread;
+    private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
+    static {
+        ORIENTATIONS.append(Surface.ROTATION_0, 0);
+        ORIENTATIONS.append(Surface.ROTATION_90, 90);
+        ORIENTATIONS.append(Surface.ROTATION_180, 180);
+        ORIENTATIONS.append(Surface.ROTATION_270, 270);
+    }
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -87,11 +96,14 @@ public class CalibrationActivity extends AppCompatActivity {
         textureView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
             @Override
             public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+                configureTransform(width, height);
                 backgroundHandler.post(()->openCamera());
             }
 
             @Override
-            public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {}
+            public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+                configureTransform(width, height);
+            }
 
             @Override
             public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
@@ -113,6 +125,30 @@ public class CalibrationActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+
+    private void configureTransform(int viewWidth, int viewHeight) {
+        if (textureView == null) {
+            return;
+        }
+        int rotation = getWindowManager().getDefaultDisplay().getRotation();
+        Matrix matrix = new Matrix();
+        RectF viewRect = new RectF(0, 0, viewWidth, viewHeight);
+        RectF bufferRect = new RectF(0, 0, viewHeight, viewWidth);
+        float centerX = viewRect.centerX();
+        float centerY = viewRect.centerY();
+
+        if (rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270) {
+            bufferRect.offset(centerX - bufferRect.centerX(), centerY - bufferRect.centerY());
+            matrix.setRectToRect(viewRect, bufferRect, Matrix.ScaleToFit.FILL);
+            float scale = Math.max((float) viewHeight / bufferRect.height(), (float) viewWidth / bufferRect.width());
+            matrix.postScale(scale, scale, centerX, centerY);
+            matrix.postRotate(90 * (rotation - 2), centerX, centerY);
+        } else if (rotation == Surface.ROTATION_180) {
+            matrix.postRotate(180, centerX, centerY);
+        }
+        textureView.setTransform(matrix);
     }
 
     //initialize websocket connection
@@ -229,13 +265,13 @@ public class CalibrationActivity extends AppCompatActivity {
         try {
             SurfaceTexture texture = textureView.getSurfaceTexture();
             assert texture != null;
-            texture.setDefaultBufferSize(320, 240);
+            texture.setDefaultBufferSize(320, 180);
             Surface surface = new Surface(texture);
 
             previewRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
             previewRequestBuilder.addTarget(surface);
 
-            imageReader = ImageReader.newInstance(320, 240, ImageFormat.JPEG, 10);
+            imageReader = ImageReader.newInstance(320, 180, ImageFormat.JPEG, 10);
             imageReader.setOnImageAvailableListener(onImageAvailableListener, imageHandler);
 
             cameraDevice.createCaptureSession(Arrays.asList(surface, imageReader.getSurface()), new CameraCaptureSession.StateCallback() {
@@ -244,6 +280,7 @@ public class CalibrationActivity extends AppCompatActivity {
                     if (cameraDevice == null) return;
                     captureSession = session;
                     try {
+                        configureTransform(textureView.getWidth(), textureView.getHeight());
                         captureSession.setRepeatingRequest(previewRequestBuilder.build(), null, backgroundHandler);
                     } catch (CameraAccessException e) {
                         e.printStackTrace();
@@ -366,11 +403,14 @@ public class CalibrationActivity extends AppCompatActivity {
             textureView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
                 @Override
                 public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+                    configureTransform(width, height);
                     backgroundHandler.post(() -> openCamera());
                 }
 
                 @Override
-                public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {}
+                public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+                    configureTransform(width, height);
+                }
 
                 @Override
                 public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
