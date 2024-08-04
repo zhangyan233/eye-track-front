@@ -29,13 +29,13 @@ byte[] jsonBytes = prefixedJson.getBytes(StandardCharsets.UTF_8);
     ];
     ws.send('VideoURLs:' + videoUrls.join(','));
     
-- Send PredictionUser object with a symbol 'P' to tell server it's an object from prediction step
-## Example Code
-  ```java
-  PredictionUser user = new PredictionUser("testUser1", image, 25, 1);
-              Gson gson = new Gson();
-              String json = gson.toJson(user);
-  
-              String prefixedJson = "P" + json;
-              byte[] jsonBytes = prefixedJson.getBytes(StandardCharsets.UTF_8);
+  - Send PredictionUser object with a symbol 'P' to tell server it's an object from prediction step
+  ## Example Code
+    ```java
+    PredictionUser user = new PredictionUser("testUser1", image, 25, 1);
+                Gson gson = new Gson();
+                String json = gson.toJson(user);
+    
+                String prefixedJson = "P" + json;
+                byte[] jsonBytes = prefixedJson.getBytes(StandardCharsets.UTF_8);
 
