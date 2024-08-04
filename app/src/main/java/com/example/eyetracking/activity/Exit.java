@@ -1,9 +1,11 @@
-package com.example.eyetracking;
+package com.example.eyetracking.activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+
+import com.example.eyetracking.R;
 
 public class Exit extends AppCompatActivity {
 

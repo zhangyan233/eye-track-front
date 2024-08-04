@@ -1,4 +1,4 @@
-package com.example.eyetracking;
+package com.example.eyetracking.activity;
 
 import androidx.lifecycle.ViewModel;
 

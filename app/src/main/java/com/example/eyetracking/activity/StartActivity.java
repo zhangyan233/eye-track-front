@@ -1,10 +1,12 @@
-package com.example.eyetracking;
+package com.example.eyetracking.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.eyetracking.R;
 
 public class StartActivity extends AppCompatActivity {
     @Override

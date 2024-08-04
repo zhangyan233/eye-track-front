@@ -1,4 +1,4 @@
-package com.example.eyetracking;
+package com.example.eyetracking.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.eyetracking.R;
 
 public class GenderActivity extends AppCompatActivity {
     private LinearLayout ageInputLayout;

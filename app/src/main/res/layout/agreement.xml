@@ -11,108 +11,99 @@
             android:layout_height="wrap_content"
             android:background="@drawable/drawable_shape"
             android:scaleType="centerInside"
-            app:layout_constraintBottom_toTopOf="@+id/container_sepe_group"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <ImageView
             android:id="@+id/container_sepe_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:scaleType="centerCrop"
+            app:layout_constraintTop_toBottomOf="@id/imageView2"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/imageView2" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/text_sepe_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="80dp"
-            android:layout_marginBottom="527dp"
             android:gravity="center_horizontal|top"
             android:includeFontPadding="false"
             android:lineHeight="22dp"
-            android:text="Software Engineering Practice and Education\n(SEPE)Research Group"
+            android:text="Software Engineering Practice and Education\n(SEPE) Research Group"
             android:textColor="#FF000000"
             android:textSize="20dp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintVertical_bias="1.0" />
 
-        <CheckBox
-            android:id="@+id/checkbox_privacy_policy"
-            android:layout_width="33dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="200dp"
-            android:layout_marginEnd="374dp"
-            android:layout_marginBottom="411dp"
-            android:buttonTint="#FF000000"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/container_sepe_group"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginTop="32dp">
 
-        <CheckBox
-            android:id="@+id/checkbox_data_consent"
-            android:layout_width="38dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="252dp"
-            android:layout_marginEnd="373dp"
-            android:layout_marginBottom="359dp"
-            android:buttonTint="#FF000000"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+                <CheckBox
+                    android:id="@+id/checkbox_privacy_policy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="#FF000000"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/text_privacy_policy" />
 
-        <TextView
-            android:id="@+id/text_privacy_policy"
-            android:layout_width="350dp"
-            android:layout_height="41dp"
-            android:layout_marginStart="37dp"
-            android:layout_marginTop="200dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginBottom="418dp"
-            android:gravity="left|center_vertical"
-            android:includeFontPadding="false"
-            android:lineHeight="18dp"
-            android:maxLines="4"
-            android:text="I have read the University of Calgary’s privacy policy."
-            android:textColor="#FF000000"
-            android:textSize="18dp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:id="@+id/text_privacy_policy"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="left|center_vertical"
+                    android:includeFontPadding="false"
+                    android:lineHeight="18dp"
+                    android:maxLines="4"
+                    android:text="I have read the University of Calgary’s privacy policy."
+                    android:textColor="#FF000000"
+                    android:textSize="18dp"
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/checkbox_privacy_policy"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginStart="8dp" />
 
-        <TextView
-            android:id="@+id/text_data_consent"
-            android:layout_width="354dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="41dp"
-            android:layout_marginTop="261dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="359dp"
-            android:gravity="left|center_vertical"
-            android:includeFontPadding="false"
-            android:lineHeight="18dp"
-            android:maxLines="4"
-            android:text="I consent for my data to be collected and used for research purposes."
-            android:textColor="#FF000000"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+                <CheckBox
+                    android:id="@+id/checkbox_data_consent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="#FF000000"
+                    app:layout_constraintTop_toBottomOf="@id/checkbox_privacy_policy"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/text_data_consent"
+                    android:layout_marginTop="16dp" />
+
+                <TextView
+                    android:id="@+id/text_data_consent"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="left|center_vertical"
+                    android:includeFontPadding="false"
+                    android:lineHeight="18dp"
+                    android:maxLines="4"
+                    android:text="I consent for my data to be collected and used for research purposes."
+                    android:textColor="#FF000000"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toBottomOf="@id/text_privacy_policy"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/checkbox_data_consent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
             android:id="@+id/text_warning"
@@ -126,56 +117,16 @@
             android:textColor="#FF0000"
             android:textSize="22sp"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/checkbox_data_consent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-        <!--        <TextView-->
-        <!--            android:id="@+id/text_data_consent"-->
-        <!--            android:layout_width="354dp"-->
-        <!--            android:layout_height="41dp"-->
-        <!--            android:layout_marginStart="41dp"-->
-        <!--            android:layout_marginTop="252dp"-->
-        <!--            android:layout_marginEnd="16dp"-->
-        <!--            android:layout_marginBottom="366dp"-->
-        <!--            android:gravity="left|center_vertical"-->
-        <!--            android:includeFontPadding="false"-->
-        <!--            android:lineHeight="18dp"-->
-        <!--            android:maxLines="4"-->
-        <!--            android:text="I consent for my data to be collected and used for research purposes."-->
-        <!--            android:textColor="#FF000000"-->
-        <!--            android:textSize="18dp"-->
-        <!--            android:textStyle="bold"-->
-        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--            app:layout_constraintEnd_toEndOf="parent"-->
-        <!--            app:layout_constraintStart_toStartOf="parent"-->
-        <!--            app:layout_constraintTop_toTopOf="parent" />-->
-
-        <!--        <TextView-->
-        <!--            android:id="@+id/text_warning"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:gravity="center_horizontal|center_vertical"-->
-        <!--            android:includeFontPadding="false"-->
-        <!--            android:maxLines="1"-->
-        <!--            android:singleLine="true"-->
-        <!--            android:text="Must select all options"-->
-        <!--            android:textColor="#FF0000"-->
-        <!--            android:textSize="22dp"-->
-        <!--            android:visibility="gone"-->
-        <!--            app:layout_constraintEnd_toEndOf="parent"-->
-        <!--            app:layout_constraintStart_toStartOf="parent"-->
-        <!--            app:layout_constraintTop_toBottomOf="@id/text_data_consent" />
--->
+            android:layout_marginTop="16dp"
+            tools:ignore="NotSibling" />
 
         <Button
             android:id="@+id/buttonToPage2"
             android:layout_width="wrap_content"
             android:layout_height="63dp"
-            android:layout_marginTop="538dp"
-            android:layout_marginBottom="58dp"
             android:onClick="onAgreeAndContinueClicked"
             android:text="Agree and Continue"
             android:textSize="28sp"
@@ -183,22 +134,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrier"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="top"
-            app:constraint_referenced_ids="text_privacy_policy" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="17dp"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/text_warning"
+            android:layout_marginTop="32dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

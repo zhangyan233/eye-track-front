@@ -1,4 +1,4 @@
-package com.example.eyetracking;
+package com.example.eyetracking.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.eyetracking.R;
 
 import java.io.File;
 import java.io.FileWriter;

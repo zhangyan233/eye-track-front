@@ -1,9 +1,11 @@
-package com.example.eyetracking;
+package com.example.eyetracking.activity;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+
+import com.example.eyetracking.R;
 
 public class InstructionActivity extends Activity {
     @Override

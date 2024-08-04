@@ -1,4 +1,4 @@
-package com.example.eyetracking;
+package com.example.eyetracking.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,6 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.example.eyetracking.R;
 
 public class VideoChooseActivity extends Activity {
     private Spinner videoSpinner;
