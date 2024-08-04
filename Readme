@@ -22,7 +22,8 @@ byte[] jsonBytes = prefixedJson.getBytes(StandardCharsets.UTF_8);
 
   - Receive multiple video urls from server, response starts with "VideoURLs"
   ## Example Code
-    ```javascript
+    Require:webSocketClient.send("RequestVideoURL");
+    Response: 
     const videoUrls = [
         'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
         'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4'
