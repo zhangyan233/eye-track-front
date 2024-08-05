@@ -275,8 +275,8 @@ public class VideoPlayActivity extends Activity {
             builder.addTarget(imageReader.getSurface());
             builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
             builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
-            builder.set(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, 3); // 设置曝光补偿
-            builder.set(CaptureRequest.SENSOR_SENSITIVITY, 800);
+//            builder.set(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, 3); // 设置曝光补偿
+//            builder.set(CaptureRequest.SENSOR_SENSITIVITY, 800);
 
             if (faceDetectModes != null && faceDetectModes.length > 0) {
                 builder.set(CaptureRequest.STATISTICS_FACE_DETECT_MODE, CameraMetadata.STATISTICS_FACE_DETECT_MODE_FULL);

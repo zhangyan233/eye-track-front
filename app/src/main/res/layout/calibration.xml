@@ -8,11 +8,18 @@
     android:background="@drawable/drawable_shape"
     tools:context=".activity.CalibrationActivity">
 
+    <!-- 定义一个垂直的 Guideline，位置在父视图高度的 10% -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_10_percent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.1" />
+
     <TextView
         android:id="@+id/text_check_position"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="84dp"
         android:gravity="center_horizontal|center_vertical"
         android:includeFontPadding="false"
         android:maxLines="1"
@@ -24,18 +31,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
+        app:layout_constraintTop_toBottomOf="@id/guideline_10_percent" />
 
 
     <TextView
         android:id="@+id/text_face_match2"
-        android:layout_width="381dp"
-        android:layout_height="234dp"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="248dp"
-        android:layout_marginEnd="56dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="16dp"
         android:gravity="top|start"
         android:includeFontPadding="false"
         android:lineHeight="24dp"
@@ -44,47 +49,42 @@
         android:textColor="#FF333333"
         android:textSize="14dp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/buttonToPage1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.42"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/text_check_position"
+        app:layout_constraintVertical_bias="0.1" />
 
     <Button
         android:id="@+id/buttonToPage1"
-        android:layout_width="155dp"
+        android:layout_width="0dp"
         android:layout_height="52dp"
-        android:layout_marginStart="232dp"
-        android:layout_marginTop="593dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="16dp"
         android:onClick="goToCalibrationDirection"
         android:text="Continue"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
         app:backgroundTint="#000080"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/buttonToPage3"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <Button
         android:id="@+id/buttonToPage3"
-        android:layout_width="148dp"
+        android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_marginStart="58dp"
-        android:layout_marginTop="593dp"
-        android:layout_marginEnd="205dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="16dp"
         android:onClick="backToInstruction"
         android:text="Back"
         android:textColorLink="#FFFFFF"
         android:textSize="24sp"
         app:backgroundTint="#8B1313"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintEnd_toStartOf="@id/buttonToPage1"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

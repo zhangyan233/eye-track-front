@@ -32,7 +32,7 @@
         <activity android:name=".activity.AgreementActivity" android:exported="true" />
         <activity android:name=".activity.GenderActivity" android:exported="true" />
         <activity android:name=".activity.InstructionActivity" android:exported="true" />
-        <activity android:name=".activity.CalibrationActivity" android:exported="true" />
+        <activity android:name=".activity.CalibrationActivity" android:exported="true" android:configChanges="orientation|screenSize" android:screenOrientation="sensor"/>
         <activity android:name=".activity.CalibrationdirectorActivity" android:exported="true" android:configChanges="orientation|screenSize" android:screenOrientation="sensor"/>
         <activity android:name=".activity.CalibrationreddotActivity" android:exported="true" android:configChanges="orientation|screenSize" android:screenOrientation="sensor"/>
         <activity android:name=".activity.VideoPlayActivity" android:exported="true" android:configChanges="orientation|screenSize" android:screenOrientation="sensor" />
