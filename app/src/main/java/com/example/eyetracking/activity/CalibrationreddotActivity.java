@@ -2,6 +2,7 @@ package com.example.eyetracking.activity;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
 import android.hardware.camera2.CameraAccessException;
@@ -55,11 +56,17 @@ public class CalibrationreddotActivity extends AppCompatActivity {
     private boolean isCapturing=true;
     private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
     public int[] faceDetectModes;
+    private int age;
+    private int gender;
+    SharedPreferences sharedPreferences ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.calibrationreddot);
+        sharedPreferences=getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        age=sharedPreferences.getInt("age",20);
+        gender=sharedPreferences.getInt("gender",1);
 
         if (ActivityCompat.checkSelfPermission(CalibrationreddotActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(CalibrationreddotActivity.this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
@@ -227,7 +234,7 @@ public class CalibrationreddotActivity extends AppCompatActivity {
     //send image to websocket
     private void sendImage(byte[] image) {
         Runnable sendTask = () -> {
-            CalibrationUser user = new CalibrationUser("testUser1", image, 25, 1,
+            CalibrationUser user = new CalibrationUser("testUser1", image, age, gender,
                     new int[]{200, 256});
             Gson gson = new Gson();
             String json = gson.toJson(user);
