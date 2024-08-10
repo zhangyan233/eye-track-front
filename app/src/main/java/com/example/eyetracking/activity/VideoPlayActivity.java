@@ -97,8 +97,8 @@ public class VideoPlayActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.videoplay);
 
         if (ActivityCompat.checkSelfPermission(VideoPlayActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -169,18 +169,29 @@ public class VideoPlayActivity extends Activity {
 
         player.addListener(new ExoPlayer.Listener() {
             @Override
+            //Automatic jump to exit page.
             public void onPlaybackStateChanged(int playbackState) {
                 if (playbackState == ExoPlayer.STATE_ENDED) {
                     stopImageCapture();
-
+                    Intent intent = new Intent(VideoPlayActivity.this, Exit.class);
+                    startActivity(intent);
+                    finish();
                 }
             }
+            //            public void onPlaybackStateChanged(int playbackState) {
+//                if (playbackState == ExoPlayer.STATE_ENDED) {
+//                    stopImageCapture();
+//
+//                }
+//            }
 
             @Override
             public void onPlayerError(ExoPlaybackException error) {
                 Log.e(TAG, "Playback error: ", error);
             }
         });
+
+
     }
 
     private void startBackgroundThread() {
@@ -275,8 +286,8 @@ public class VideoPlayActivity extends Activity {
             builder.addTarget(imageReader.getSurface());
             builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
             builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
-//            builder.set(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, 3); // 设置曝光补偿
-//            builder.set(CaptureRequest.SENSOR_SENSITIVITY, 800);
+            builder.set(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, 3); // 设置曝光补偿
+            builder.set(CaptureRequest.SENSOR_SENSITIVITY, 800);
 
             if (faceDetectModes != null && faceDetectModes.length > 0) {
                 builder.set(CaptureRequest.STATISTICS_FACE_DETECT_MODE, CameraMetadata.STATISTICS_FACE_DETECT_MODE_FULL);
@@ -361,10 +372,5 @@ public class VideoPlayActivity extends Activity {
 
 
 
-//
-//    public void backToVideoChoose(View view) {
-//        Intent intent = new Intent(this, VideoChooseActivity.class);
-//        startActivity(intent);
-//        finish();
-//    }
+
 }

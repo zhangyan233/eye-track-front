@@ -1,3 +1,5 @@
+
+
 package com.example.eyetracking.activity;
 
 import android.Manifest;
@@ -32,6 +34,13 @@ import com.google.gson.Gson;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
+import android.os.Bundle;
+import android.os.Handler;
+import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.eyetracking.R;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -55,6 +64,10 @@ public class CalibrationreddotActivity extends AppCompatActivity {
     private boolean isCapturing=true;
     private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
     public int[] faceDetectModes;
+    //red dot
+    private static final int DOT_DISPLAY_DURATION = 4000; // 4秒
+    private View[] redDots;
+    private int currentDotIndex = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,11 +109,31 @@ public class CalibrationreddotActivity extends AppCompatActivity {
         webSocketClient.connect();
         initialize();
 
+        //Inital reddots and dots sequence
+        initializeRedDots();
+        startDotSequence();
+
+
+
     }
 
     private void initialize() {
         startBackgroundThread();
         startCameraCapture();
+    }
+    //Initial Reddots
+    private void initializeRedDots() {
+        redDots = new View[]{
+                findViewById(R.id.dot_top_left),
+                findViewById(R.id.dot_top_center),
+                findViewById(R.id.dot_top_right),
+                findViewById(R.id.dot_center_right),
+                findViewById(R.id.dot_center),
+                findViewById(R.id.dot_center_left),
+                findViewById(R.id.dot_bottom_left),
+                findViewById(R.id.dot_bottom_center),
+                findViewById(R.id.dot_bottom_right)
+        };
     }
 
     private void startBackgroundThread() {
@@ -195,8 +228,8 @@ public class CalibrationreddotActivity extends AppCompatActivity {
             builder.addTarget(imageReader.getSurface());
             builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
             builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
-//            builder.set(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, 3); // 设置曝光补偿
-//            builder.set(CaptureRequest.SENSOR_SENSITIVITY, 800);
+            builder.set(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, 3); // 设置曝光补偿
+            builder.set(CaptureRequest.SENSOR_SENSITIVITY, 800);
 
             if (faceDetectModes != null && faceDetectModes.length > 0) {
                 builder.set(CaptureRequest.STATISTICS_FACE_DETECT_MODE, CameraMetadata.STATISTICS_FACE_DETECT_MODE_FULL);
@@ -291,11 +324,29 @@ public class CalibrationreddotActivity extends AppCompatActivity {
     }
 
 
-    public void backToCalibration(View view) {
-        stopImageCapture();
-        Intent intent = new Intent(this, CalibrationActivity.class);
+   //reddot
+
+    private void startDotSequence() {
+        if (currentDotIndex < redDots.length) {
+            redDots[currentDotIndex].setVisibility(View.VISIBLE);
+
+            new Handler().postDelayed(() -> {
+                redDots[currentDotIndex].setVisibility(View.INVISIBLE);
+                currentDotIndex++;
+                startDotSequence();
+            }, DOT_DISPLAY_DURATION);
+        } else {
+            goToVideoChoose();
+        }
+    }
+    //Auto jump into VideoChoose Activity
+    private void goToVideoChoose() {
+        Intent intent = new Intent(CalibrationreddotActivity.this, VideoChooseActivity.class);
         startActivity(intent);
+        finish();
     }
 }
+
+
 
 

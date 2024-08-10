@@ -29,6 +29,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".activity.VideoChooseActivity"
+            android:exported="true"
+            android:screenOrientation="landscape" />
+
         <activity android:name=".activity.AgreementActivity" android:exported="true" />
         <activity android:name=".activity.GenderActivity" android:exported="true" />
         <activity android:name=".activity.InstructionActivity" android:exported="true" />
@@ -36,7 +41,6 @@
         <activity android:name=".activity.CalibrationdirectorActivity" android:exported="true" android:configChanges="orientation|screenSize" android:screenOrientation="sensor"/>
         <activity android:name=".activity.CalibrationreddotActivity" android:exported="true" android:configChanges="orientation|screenSize" android:screenOrientation="sensor"/>
         <activity android:name=".activity.VideoPlayActivity" android:exported="true" android:configChanges="orientation|screenSize" android:screenOrientation="sensor" />
-        <activity android:name=".activity.VideoChooseActivity" android:exported="true" />
         <activity android:name=".activity.DataOutputActivity" android:exported="true" />
         <activity android:name=".activity.Exit" android:exported="true" />
 

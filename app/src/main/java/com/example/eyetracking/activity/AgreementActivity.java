@@ -27,7 +27,7 @@ public class AgreementActivity extends AppCompatActivity {
         textWarning = findViewById(R.id.text_warning);
     }
 
-    public void onAgreeAndContinueClicked(View view) {
+    public void goToGender(View view) {
         if (checkboxPrivacyPolicy.isChecked() && checkboxDataConsent.isChecked()) {
             textWarning.setVisibility(View.GONE);
             // Continue to next activity

@@ -23,7 +23,6 @@ public class VideoChooseActivity extends Activity {
         videoSpinner = findViewById(R.id.videoSpinner);
         submitButton = findViewById(R.id.submitButton);
 
-        // 设置Spinner适配器
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.video_options, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
