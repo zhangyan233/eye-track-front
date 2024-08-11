@@ -6,6 +6,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -93,6 +94,10 @@ public class VideoPlayActivity extends Activity {
     private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
     private List<String> videoUrls = new ArrayList<>();
     public int[] faceDetectModes;
+    private int age;
+    private int gender;
+    SharedPreferences sharedPreferences ;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +105,9 @@ public class VideoPlayActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.videoplay);
+        sharedPreferences=getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        age=sharedPreferences.getInt("age",20);
+        gender=sharedPreferences.getInt("gender",1);
 
         if (ActivityCompat.checkSelfPermission(VideoPlayActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(VideoPlayActivity.this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
@@ -319,7 +327,7 @@ public class VideoPlayActivity extends Activity {
     //send image to websocket
     private void sendImage(byte[] image) {
         Runnable sendTask = () -> {
-            PredictionUser user = new PredictionUser("testUser1", image, 25, 1);
+            PredictionUser user = new PredictionUser("testUser1", image, age, gender);
             Gson gson = new Gson();
             String json = gson.toJson(user);
 

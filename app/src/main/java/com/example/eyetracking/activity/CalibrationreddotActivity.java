@@ -4,6 +4,7 @@ package com.example.eyetracking.activity;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
 import android.hardware.camera2.CameraAccessException;
@@ -68,11 +69,19 @@ public class CalibrationreddotActivity extends AppCompatActivity {
     private static final int DOT_DISPLAY_DURATION = 4000; // 4秒
     private View[] redDots;
     private int currentDotIndex = 0;
+    private int age;
+    private int gender;
+    SharedPreferences sharedPreferences ;
+    private int[] coordinates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.calibrationreddot);
+        sharedPreferences=getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        age=sharedPreferences.getInt("age",20);
+        gender=sharedPreferences.getInt("gender",1);
+
 
         if (ActivityCompat.checkSelfPermission(CalibrationreddotActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(CalibrationreddotActivity.this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
@@ -134,6 +143,8 @@ public class CalibrationreddotActivity extends AppCompatActivity {
                 findViewById(R.id.dot_bottom_center),
                 findViewById(R.id.dot_bottom_right)
         };
+
+
     }
 
     private void startBackgroundThread() {
@@ -194,7 +205,7 @@ public class CalibrationreddotActivity extends AppCompatActivity {
                 public void onConfigured(@NonNull CameraCaptureSession session) {
                     Log.i("Capture", "******start capture*******");
                     captureSession = session;
-                    startImageCapture();//start to capture which starting front camera and make imagereader can get the content of this camera
+                    //startImageCapture();//start to capture which starting front camera and make imagereader can get the content of this camera
                 }
 
                 @Override
@@ -260,8 +271,9 @@ public class CalibrationreddotActivity extends AppCompatActivity {
     //send image to websocket
     private void sendImage(byte[] image) {
         Runnable sendTask = () -> {
-            CalibrationUser user = new CalibrationUser("testUser1", image, 25, 1,
-                    new int[]{200, 256});
+            CalibrationUser user = new CalibrationUser("testUser1", image, age, gender,
+                    coordinates);
+            Log.i("coordinates","x: "+coordinates[0]+" y: "+coordinates[1]);
             Gson gson = new Gson();
             String json = gson.toJson(user);
 
@@ -329,9 +341,15 @@ public class CalibrationreddotActivity extends AppCompatActivity {
     private void startDotSequence() {
         if (currentDotIndex < redDots.length) {
             redDots[currentDotIndex].setVisibility(View.VISIBLE);
+            coordinates=new int[2];
+            redDots[currentDotIndex].getLocationOnScreen(coordinates);
+            // Start image capture when the red dot is displayed
+            startImageCapture();
+
 
             new Handler().postDelayed(() -> {
                 redDots[currentDotIndex].setVisibility(View.INVISIBLE);
+                stopImageCapture();
                 currentDotIndex++;
                 startDotSequence();
             }, DOT_DISPLAY_DURATION);
