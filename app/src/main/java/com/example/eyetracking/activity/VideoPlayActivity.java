@@ -181,9 +181,12 @@ public class VideoPlayActivity extends Activity {
             public void onPlaybackStateChanged(int playbackState) {
                 if (playbackState == ExoPlayer.STATE_ENDED) {
                     stopImageCapture();
-                    Intent intent = new Intent(VideoPlayActivity.this, Exit.class);
-                    startActivity(intent);
-                    finish();
+                    new Handler().postDelayed(() -> {
+                        Intent intent = new Intent(VideoPlayActivity.this, Exit.class);
+                        startActivity(intent);
+                        finish();
+                    }, 2000); // 2 seconds delay
+
                 }
             }
             //            public void onPlaybackStateChanged(int playbackState) {

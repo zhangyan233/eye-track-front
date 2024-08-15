@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -346,7 +347,14 @@ public class CalibrationreddotActivity extends AppCompatActivity {
                 startDotSequence();
             }, DOT_DISPLAY_DURATION);
         } else {
-            goToVideoChoose();
+            //after showing red dots, displaying message to offer more time to make sure data transmission
+            TextView transferStatus = findViewById(R.id.transferStatus);
+            transferStatus.setVisibility(View.VISIBLE);
+
+            // 延迟5秒后跳转到 VideoChooseActivity
+            new Handler().postDelayed(() -> {
+                goToVideoChoose();
+            }, 3000); // 3 seconds delay
         }
     }
     //Auto jump into VideoChoose Activity

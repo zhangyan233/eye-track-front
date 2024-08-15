@@ -123,4 +123,18 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintVertical_bias="1.0" />
 
+    <TextView
+        android:id="@+id/transferStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Transmitting data, please wait..."
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/surface_view"
+        app:layout_constraintBottom_toBottomOf="@id/surface_view"
+        app:layout_constraintStart_toStartOf="@id/surface_view"
+        app:layout_constraintEnd_toEndOf="@id/surface_view" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
