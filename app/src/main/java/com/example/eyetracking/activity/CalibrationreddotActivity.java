@@ -6,6 +6,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.ImageFormat;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -74,6 +75,7 @@ public class CalibrationreddotActivity extends AppCompatActivity {
     private int gender;
     SharedPreferences sharedPreferences ;
     private int[] coordinates;
+    private final ScheduledExecutorService imageProcessingExecutor = Executors.newScheduledThreadPool(4);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,7 +160,7 @@ public class CalibrationreddotActivity extends AppCompatActivity {
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
             faceDetectModes = characteristics.get(CameraCharacteristics.STATISTICS_INFO_AVAILABLE_FACE_DETECT_MODES);
 
-            imageReader = ImageReader.newInstance(640, 360, ImageFormat.JPEG, 10);
+            imageReader = ImageReader.newInstance(320, 240, ImageFormat.JPEG, 50);
             imageReader.setOnImageAvailableListener(onImageAvailableListener, backgroundHandler);
 
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -254,12 +256,16 @@ public class CalibrationreddotActivity extends AppCompatActivity {
         @Override
         public void onImageAvailable(ImageReader reader) {
             if(isCapturing){
-                Image image = reader.acquireNextImage();
-                if (image != null) {
+                Image image = null;
+                while ((image = reader.acquireLatestImage()) != null) {
                     ByteBuffer buffer = image.getPlanes()[0].getBuffer();
                     byte[] bytes = new byte[buffer.remaining()];
                     buffer.get(bytes);
-                    sendImage(bytes);
+
+                    // 异步处理图像
+                    imageProcessingExecutor.execute(() -> {
+                        sendImage(bytes);
+                    });
                     image.close();
                 }
             }
@@ -333,19 +339,29 @@ public class CalibrationreddotActivity extends AppCompatActivity {
 
     private void startDotSequence() {
         if (currentDotIndex < redDots.length) {
+            redDots[currentDotIndex].setBackgroundColor(Color.YELLOW);
             redDots[currentDotIndex].setVisibility(View.VISIBLE);
             coordinates=new int[2];
             redDots[currentDotIndex].getLocationOnScreen(coordinates);
             // Start image capture when the red dot is displayed
-            startImageCapture();
-
+//            startImageCapture();
 
             new Handler().postDelayed(() -> {
+                // 红点亮起时开始拍照
+                redDots[currentDotIndex].setBackgroundColor(Color.RED);
+                Log.d("DotSequence", "Red dot " + currentDotIndex + " is now visible.");
+                startImageCapture(); // 启动图像捕捉
+
+            }, 1000); // 1秒延时
+
+            // 4秒后隐藏红点，停止图像捕捉并切换到下一个点
+            new Handler().postDelayed(() -> {
                 redDots[currentDotIndex].setVisibility(View.INVISIBLE);
-                stopImageCapture();
+                stopImageCapture(); // 停止图像捕捉
                 currentDotIndex++;
-                startDotSequence();
-            }, DOT_DISPLAY_DURATION);
+                startDotSequence(); // 开始下一个红点序列
+
+            }, 5000); // 总共5秒（黄点1秒+红点4秒）
         } else {
             //after showing red dots, displaying message to offer more time to make sure data transmission
             TextView transferStatus = findViewById(R.id.transferStatus);

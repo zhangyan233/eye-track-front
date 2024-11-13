@@ -320,7 +320,11 @@ public class VideoPlayActivity extends Activity {
                     ByteBuffer buffer = image.getPlanes()[0].getBuffer();
                     byte[] bytes = new byte[buffer.remaining()];
                     buffer.get(bytes);
-                    sendImage(bytes);
+                    runOnUiThread(()->{
+                        int videoIndex=player.getCurrentWindowIndex();
+                        long relativeTime=player.getCurrentPosition();
+                        sendImage(bytes,videoIndex,relativeTime);
+                    });
                     image.close();
                 }
             }
@@ -328,9 +332,9 @@ public class VideoPlayActivity extends Activity {
     };
 
     //send image to websocket
-    private void sendImage(byte[] image) {
+    private void sendImage(byte[] image,int videoIndex,long relativeTime) {
         Runnable sendTask = () -> {
-            PredictionUser user = new PredictionUser("testUser1", image, age, gender);
+            PredictionUser user = new PredictionUser("testUser1", image, age, gender,relativeTime,videoIndex);
             Gson gson = new Gson();
             String json = gson.toJson(user);
 
