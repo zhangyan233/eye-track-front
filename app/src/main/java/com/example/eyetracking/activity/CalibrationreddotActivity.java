@@ -93,7 +93,9 @@ public class CalibrationreddotActivity extends AppCompatActivity {
 
         URI uri;
         try {
-            uri = new URI("ws://192.168.0.179:8080/");
+            //uri = new URI("ws://192.168.0.179:8080/");
+            uri =new URI("ws://172.24.144.210:8000/ws/dispatcher/");
+
         } catch (URISyntaxException e) {
             e.printStackTrace();
             return;
@@ -275,8 +277,7 @@ public class CalibrationreddotActivity extends AppCompatActivity {
     //send image to websocket
     private void sendImage(byte[] image) {
         Runnable sendTask = () -> {
-            CalibrationUser user = new CalibrationUser("testUser1", image, age, gender,
-                    coordinates);
+            CalibrationUser user = new CalibrationUser( image, coordinates);
             Log.i("coordinates","x: "+coordinates[0]+" y: "+coordinates[1]);
             Gson gson = new Gson();
             String json = gson.toJson(user);
@@ -285,9 +286,10 @@ public class CalibrationreddotActivity extends AppCompatActivity {
             String prefixedJson = "C" + json;
             byte[] jsonBytes = prefixedJson.getBytes(StandardCharsets.UTF_8);
 
+
             if (webSocketClient != null && webSocketClient.isOpen()) {
                 Log.i("send","start sending");
-                webSocketClient.send(jsonBytes);
+                webSocketClient.send(prefixedJson);
             }
         };
         new Thread(sendTask).start();
