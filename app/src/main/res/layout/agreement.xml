@@ -2,7 +2,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+        android:background="#F3FDE8">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_top"
@@ -33,6 +34,18 @@
             app:layout_constraintGuide_percent="0.96" />
 
         <ImageView
+            android:id="@+id/thankYouImage"
+            android:layout_width="169dp"
+            android:layout_height="151dp"
+            android:layout_marginTop="28dp"
+            android:contentDescription="UOfCalgaryImage"
+            android:src="@drawable/uoclogo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <ImageView
             android:id="@+id/imageView2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -55,15 +68,16 @@
             android:id="@+id/text_sepe_group"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="164dp"
             android:gravity="center_horizontal|top"
             android:includeFontPadding="false"
-            android:lineHeight="22dp"
+            android:lineHeight="28dp"
             android:text="Software Engineering Practice and Education\n(SEPE) Research Group"
-            android:textColor="#FF000000"
-            android:textSize="16dp"
+            android:textColor="#3C552D"
+            android:textSize="28sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@id/guideline_end"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="@id/guideline_start"
             app:layout_constraintTop_toBottomOf="@id/container_sepe_group" />
 
@@ -71,15 +85,18 @@
             android:id="@+id/checkbox_privacy_policy"
             android:layout_width="48dp"
             android:layout_height="52dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="28dp"
             android:buttonTint="#FF000000"
-            app:layout_constraintTop_toBottomOf="@id/text_sepe_group"
-            app:layout_constraintStart_toStartOf="@id/guideline_start" />
+            app:layout_constraintStart_toStartOf="@id/guideline_start"
+            app:layout_constraintTop_toBottomOf="@id/text_sepe_group" />
 
         <TextView
             android:id="@+id/text_privacy_policy"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="333dp"
+            android:layout_height="97dp"
             android:layout_marginStart="36sp"
+            android:layout_marginTop="48dp"
             android:gravity="start|center_vertical"
             android:includeFontPadding="false"
             android:lineHeight="22dp"
@@ -88,25 +105,28 @@
             android:textColor="#FF000000"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/text_sepe_group"
-            app:layout_constraintStart_toEndOf="@id/checkbox_privacy_policy"
+            app:layout_constraintBaseline_toBaselineOf="@id/checkbox_privacy_policy"
             app:layout_constraintEnd_toEndOf="@id/guideline_end"
-            app:layout_constraintBaseline_toBaselineOf="@id/checkbox_privacy_policy" />
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@id/checkbox_privacy_policy"
+            app:layout_constraintTop_toBottomOf="@id/text_sepe_group" />
 
         <CheckBox
             android:id="@+id/checkbox_data_consent"
             android:layout_width="48dp"
             android:layout_height="52dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="48dp"
             android:buttonTint="#FF000000"
-            app:layout_constraintTop_toBottomOf="@id/checkbox_privacy_policy"
-            app:layout_constraintStart_toStartOf="@id/guideline_start" />
+            app:layout_constraintStart_toStartOf="@id/guideline_start"
+            app:layout_constraintTop_toBottomOf="@id/checkbox_privacy_policy" />
 
         <TextView
             android:id="@+id/text_data_consent"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="333dp"
+            android:layout_height="91dp"
             android:layout_marginStart="36sp"
+            android:layout_marginTop="40dp"
             android:gravity="start|center_vertical"
             android:includeFontPadding="false"
             android:lineHeight="22dp"
@@ -115,10 +135,11 @@
             android:textColor="#FF000000"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/text_privacy_policy"
-            app:layout_constraintStart_toEndOf="@id/checkbox_data_consent"
+            app:layout_constraintBaseline_toBaselineOf="@id/checkbox_data_consent"
             app:layout_constraintEnd_toEndOf="@id/guideline_end"
-            app:layout_constraintBaseline_toBaselineOf="@id/checkbox_data_consent" />
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@id/checkbox_data_consent"
+            app:layout_constraintTop_toBottomOf="@id/text_privacy_policy" />
 
         <TextView
             android:id="@+id/text_warning"
@@ -142,13 +163,15 @@
             android:layout_width="245dp"
             android:layout_height="40dp"
             android:layout_marginTop="32dp"
+            android:background="@drawable/ac_buttom"
             android:onClick="goToGender"
             android:text="Continue"
-            android:textSize="18sp"
+            android:textColor="#FFFFFF"
+            android:textSize="28sp"
             app:layout_constraintBottom_toBottomOf="@id/guideline_bottom"
             app:layout_constraintEnd_toEndOf="@id/guideline_end"
             app:layout_constraintStart_toStartOf="@id/guideline_start"
             app:layout_constraintTop_toBottomOf="@id/text_warning"
-            app:layout_constraintVertical_bias="0.942" />
+            app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

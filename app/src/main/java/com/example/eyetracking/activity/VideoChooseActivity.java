@@ -59,8 +59,5 @@ public class VideoChooseActivity extends Activity {
         startActivity(intent);
     }
 
-    public void backToCalibration(View view) {
-        Intent intent = new Intent(this, CalibrationActivity.class);
-        startActivity(intent);
-    }
+
 }

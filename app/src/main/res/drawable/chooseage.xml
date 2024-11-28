@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 按下时的背景 -->
+    <item android:state_pressed="true">
+        <layer-list>
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="#B692C2" /> <!-- 按下后的颜色 -->
+                    <corners android:radius="30dp" /> <!-- 圆角半径 -->
+                </shape>
+            </item>
+            <item android:top="2dp" android:left="2dp" android:right="2dp" android:bottom="4dp">
+                <shape android:shape="rectangle">
+                    <solid android:color="#C75B7A" /> <!-- 阴影颜色（按下效果） -->
+                    <corners android:radius="30dp" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+
+    <!-- 默认状态的背景 -->
+    <item>
+        <layer-list>
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="#B692C2" /> <!-- 默认背景颜色 -->
+                    <corners android:radius="30dp" />
+                </shape>
+            </item>
+            <item android:top="2dp" android:left="2dp" android:right="2dp" android:bottom="4dp">
+                <shape android:shape="rectangle">
+                    <solid android:color="#B692C2" /> <!-- 阴影颜色（默认状态下立体效果） -->
+                    <corners android:radius="30dp" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+</selector>

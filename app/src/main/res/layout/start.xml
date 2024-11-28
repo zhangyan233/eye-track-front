@@ -2,21 +2,21 @@
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container_start"
     android:layout_width="match_parent"
     android:layout_height="812dp"
     android:background="@drawable/container_start">
 
+
     <ImageView
-        android:id="@+id/image_mask_group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:scaleType="centerInside"
-        android:src="@drawable/image_mask_group"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:id="@+id/background_image"
+        android:layout_width="1100dp"
+    android:layout_height="match_parent"
+    android:scaleType="centerCrop"
+    android:src="@drawable/homeback"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/text_eye_tracking_app"
@@ -32,26 +32,29 @@
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         android:text="Eye Tracking App"
-        android:textColor="#0D143A"
-        android:textSize="32dp"
+        android:textColor="#1E2A5E"
+        android:textSize="40dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/image_mask_group" />
+        app:layout_constraintStart_toStartOf="parent"/>
+<!--        app:layout_constraintTop_toBottomOf="@id/image_mask_group"/>-->
 
     <Button
         android:id="@+id/buttonToPage2"
-        android:layout_width="195dp"
-        android:layout_height="50dp"
+        android:layout_width="250dp"
+        android:layout_height="80dp"
         android:layout_marginTop="542dp"
         android:layout_marginBottom="220dp"
         android:onClick="goToAgreement"
         android:text="Start"
-        android:textSize="28sp"
+        android:textSize="36sp"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/b_buttom"
+        android:backgroundTint="@null"
+        android:theme="@null"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

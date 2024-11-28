@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/frameLayout3"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/drawable_shape">
+    android:background="#F9F3F3">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_top"
@@ -41,29 +42,42 @@
         android:gravity="center_horizontal"
         android:includeFontPadding="false"
         android:maxLines="1"
-        android:text="Instructions"
-        android:textColor="#FF000000"
-        android:textSize="24sp"
+        android:textColor="#000000"
+        android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="@id/guideline_top"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start" />
 
-    <TextView
-        android:id="@+id/text_instruction_details"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+    <androidx.cardview.widget.CardView
+        android:layout_width="358dp"
+        android:layout_height="188dp"
         android:layout_marginTop="16dp"
-        android:gravity="left|top"
-        android:includeFontPadding="false"
-        android:lineHeight="20sp"
-        android:text="- Sit comfortably from your device.\n- Try not to move too much when performing the test.\n- Camera must be centered above or below your display.\n- Click on each red dot to calibrate eye-tracker\n- After model training, look at orange dots to confirm accuracy.\n- Select number of videos to play, you will return here after completion.\n"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:textColor="#FF333333"
-        android:textSize="14sp"
-        app:layout_constraintTop_toBottomOf="@id/text_instructions"
+        android:backgroundTint="#99C88EA7"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="4dp"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintStart_toStartOf="@id/guideline_start" />
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@id/text_instructions">
+
+        <TextView
+            android:id="@+id/text_instruction_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left|top"
+            android:includeFontPadding="false"
+            android:lineHeight="20sp"
+            android:padding="16dp"
+            android:text="- Sit comfortably from your device.\n- Try not to move too much when performing the test.\n- Camera must be centered above or below your display.\n- Click on each red dot to calibrate eye-tracker\n- After model training, look at orange dots to confirm accuracy.\n- Select number of videos to play, you will return here after completion.\n"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="#FF333333"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+
+    </androidx.cardview.widget.CardView>
+
+
 
     <TextView
         android:id="@+id/text_warnings"
@@ -72,69 +86,132 @@
         android:gravity="center_horizontal"
         android:includeFontPadding="false"
         android:maxLines="1"
-        android:text="Warnings"
-        android:textColor="#FFEA0D0D"
-        android:textSize="24sp"
+        android:text="Instructions"
+        android:textColor="#561C24"
+        android:textSize="30sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/text_instruction_details"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintStart_toStartOf="@id/guideline_start" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        tools:ignore="MissingConstraints" />
 
     <TextView
-        android:id="@+id/text_warning_details"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:gravity="left|top"
-        android:includeFontPadding="false"
-        android:lineHeight="20sp"
-        android:text="Do not cover webcam.\nDo not leave before test is complete.\nDo not blink when capturing examples."
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textColor="#060B37"
-        android:textSize="20sp"
-        app:layout_constraintTop_toBottomOf="@id/text_warnings"
-        app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintStart_toStartOf="@id/guideline_start" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Watch videos, enjoy!"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textColor="#000079"
-        android:textSize="28dp"
+        android:id="@+id/text_warning"
+        android:layout_width="175dp"
+        android:layout_height="49dp"
+        android:layout_marginTop="316dp"
+        android:gravity="center"
+        android:text="Warning"
+        android:textColor="#820000"
+        android:textSize="30sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/text_warning_details"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="340dp"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintStart_toStartOf="@id/guideline_start" />
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@id/text_warnings">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/hide" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:text="Do not cover webcam."
+                android:textColor="#060B37"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/hide" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:text="Do not leave before test is complete."
+                android:textColor="#060B37"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/hide" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:text="Do not blink when capturing examples."
+                android:textColor="#060B37"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+    </LinearLayout>
+
 
     <Button
         android:id="@+id/buttonToPage3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="92dp"
-        android:backgroundTint="#8B1313"
+        android:layout_marginBottom="28dp"
+
+        android:background="@drawable/backbuttom"
         android:onClick="backToGender"
         android:text="Back"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/buttonToPage1"
-        app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/textView" />
+        app:layout_constraintStart_toStartOf="@id/guideline_start" />
 
     <Button
         android:id="@+id/buttonToPage1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="92dp"
-        android:backgroundTint="#000080"
+        android:layout_marginBottom="28dp"
+        android:background="@drawable/b_buttom"
         android:onClick="goToCalibration"
         android:text="Continue"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintStart_toEndOf="@id/buttonToPage3"
-        app:layout_constraintTop_toBottomOf="@id/textView" />
+        app:layout_constraintStart_toEndOf="@id/buttonToPage3" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

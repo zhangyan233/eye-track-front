@@ -5,7 +5,7 @@
     android:id="@+id/frameLayout3"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/drawable_shape"
+    android:background="#F1D3CE"
     tools:context=".activity.MainActivity">
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_top"
@@ -47,7 +47,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="How old are you?"
+        android:text="Enter Your Age"
         android:textColor="#FF000000"
         android:textSize="28sp"
         android:textStyle="bold"
@@ -94,7 +94,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="144dp"
         android:gravity="center"
-        android:text="What’s Your Gender?"
+        android:text="Choose Your Gender"
         android:textColor="#FF000000"
         android:textSize="28sp"
         android:textStyle="bold"
@@ -111,20 +111,12 @@
         android:text="Tell us about your gender"
         android:textColor="#FF333333"
         android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/textView3"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintEnd_toEndOf="@id/guideline_end" />
 
-    <Spinner
-        android:id="@+id/genderSpinner"
-        android:layout_width="272dp"
-        android:layout_height="28dp"
-        android:layout_marginTop="8dp"
-        android:entries="@array/gender_options"
-        app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintHorizontal_bias="0.491"
-        app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/textView4" />
+
 
     <TextView
         android:id="@+id/textView7"
@@ -134,7 +126,8 @@
         android:gravity="center"
         android:text="Please enter your information to continue"
         android:textColor="#FF000000"
-        android:textSize="17sp"
+        android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
@@ -145,20 +138,37 @@
         android:layout_width="287dp"
         android:layout_height="41dp"
         android:layout_marginTop="4dp"
-        android:text="Enter Age"
+        android:text="Choose Age"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:background="@drawable/chooseage"
+    app:layout_constraintEnd_toEndOf="@id/guideline_end"
+    app:layout_constraintStart_toStartOf="@id/guideline_start"
+    app:layout_constraintTop_toBottomOf="@id/textView7" />
+
+    <Spinner
+        android:id="@+id/genderSpinner"
+        android:layout_width="273dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/choosegender"
+        android:entries="@array/gender_options"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/textView7" />
+        app:layout_constraintTop_toBottomOf="@id/textView4" />
 
     <Button
         android:id="@+id/buttonToPage3"
         android:layout_width="160dp"
         android:layout_height="50dp"
-        android:layout_marginTop="172dp"
-        android:text="Back"
+        android:layout_marginTop="184dp"
+        android:background="@drawable/backbuttom"
         android:onClick="backToAgreement"
+        android:text="Back"
+        android:textColor="#FFFFFF"
         android:textSize="24sp"
-        app:backgroundTint="#8B1313"
         app:layout_constraintEnd_toStartOf="@+id/buttonToPage1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/genderSpinner"
@@ -168,11 +178,12 @@
         android:id="@+id/buttonToPage1"
         android:layout_width="160dp"
         android:layout_height="50dp"
-        android:layout_marginTop="172dp"
-        android:text="Continue"
+        android:layout_marginTop="184dp"
+        android:background="@drawable/b_buttom"
         android:onClick="goToInstruction"
+        android:text="Continue"
+        android:textColor="#FFFFFF"
         android:textSize="24sp"
-        app:backgroundTint="#000080"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/buttonToPage3"
         app:layout_constraintTop_toBottomOf="@id/genderSpinner"
