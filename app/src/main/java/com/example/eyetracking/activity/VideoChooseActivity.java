@@ -2,6 +2,7 @@ package com.example.eyetracking.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -14,6 +15,7 @@ import com.example.eyetracking.R;
 public class VideoChooseActivity extends Activity {
     private Spinner videoSpinner;
     private Button submitButton;
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,10 +33,10 @@ public class VideoChooseActivity extends Activity {
         submitButton.setOnClickListener(v -> {
             String selectedVideo = videoSpinner.getSelectedItem().toString();
             int videoCount = getVideoCount(selectedVideo);
-
-            Intent intent = new Intent(this, VideoPlayActivity.class);
-            intent.putExtra("VIDEO_COUNT", videoCount);
-            startActivity(intent);
+            sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putInt("videoCount", videoCount);
+            editor.apply();
 
             Toast.makeText(this, "You selected: " + selectedVideo + ", which corresponds to " + videoCount + " video(s)", Toast.LENGTH_LONG).show();
         });

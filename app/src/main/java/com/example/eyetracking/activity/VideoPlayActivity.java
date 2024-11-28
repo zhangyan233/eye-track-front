@@ -35,11 +35,15 @@ import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.util.MimeTypes;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.gson.Gson;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,7 +101,8 @@ public class VideoPlayActivity extends Activity {
     private int age;
     private int gender;
     SharedPreferences sharedPreferences ;
-    private String[] urls;
+
+    private int videoCount;
 
 
     @Override
@@ -109,6 +114,7 @@ public class VideoPlayActivity extends Activity {
         sharedPreferences=getSharedPreferences("MySharedPref", MODE_PRIVATE);
         age=sharedPreferences.getInt("age",20);
         gender=sharedPreferences.getInt("gender",1);
+        videoCount=sharedPreferences.getInt("videoCount",1);
 
         if (ActivityCompat.checkSelfPermission(VideoPlayActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(VideoPlayActivity.this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
@@ -119,7 +125,7 @@ public class VideoPlayActivity extends Activity {
         URI uri;
         try {
             //uri = new URI("ws://192.168.0.179:8080/");
-            uri =new URI("ws://172.24.144.210:8000/ws/dispatcher/");
+            uri =new URI("ws://172.20.10.4:8000/ws/dispatcher/");
         } catch (URISyntaxException e) {
             e.printStackTrace();
             return;
@@ -129,19 +135,31 @@ public class VideoPlayActivity extends Activity {
             @Override
             public void onOpen(ServerHandshake handshake) {
                 Log.i("WebSocket", "Opened");
+                Log.i("videoCount",""+videoCount);
                 // Request video URL
-                webSocketClient.send("RequestVideoURL");
+                webSocketClient.send("RequestVideoURL:"+videoCount);
             }
 
             @Override
             public void onMessage(String message) {
                 Log.i("WebSocket", "Message received: " + message);
-                if (message.startsWith("VideoURLs:")) {
-                    urls = message.substring("VideoURLs:".length()).split(",");
-                    for (String url : urls) {
-                        videoUrls.add(url.trim());
+                try {
+                    // 解析 JSON 数据
+                    JSONObject jsonResponse = new JSONObject(message);
+                    JSONArray urlsArray = jsonResponse.getJSONArray("video_urls");
+
+                    // 清空旧的 URL 列表
+                    videoUrls.clear();
+
+                    // 将解析的 URL 添加到列表中
+                    for (int i = 0; i < urlsArray.length(); i++) {
+                        videoUrls.add(urlsArray.getString(i).trim());
                     }
+
+                    // 在主线程更新 UI
                     runOnUiThread(() -> initializePlayer(videoUrls));
+                } catch (JSONException e) {
+                    Log.e("WebSocket", "Error parsing JSON response", e);
                 }
             }
 
@@ -170,7 +188,7 @@ public class VideoPlayActivity extends Activity {
         playerView.setPlayer(player);
 
         for (String videoUrl : videoUrls) {
-            MediaItem mediaItem = new MediaItem.Builder().setUri(videoUrl).build();
+            MediaItem mediaItem = new MediaItem.Builder().setUri(videoUrl).setMimeType(MimeTypes.VIDEO_MP4).build();
             player.addMediaItem(mediaItem);
         }
 
@@ -336,7 +354,7 @@ public class VideoPlayActivity extends Activity {
     //send image to websocket
     private void sendImage(byte[] image,int videoIndex,long relativeTime) {
         Runnable sendTask = () -> {
-            PredictionUser user = new PredictionUser(urls,image,relativeTime,videoIndex);
+            PredictionUser user = new PredictionUser(videoUrls,image,relativeTime,videoIndex);
             Gson gson = new Gson();
             String json = gson.toJson(user);
 
