@@ -97,6 +97,7 @@ public class VideoPlayActivity extends Activity {
     private int age;
     private int gender;
     SharedPreferences sharedPreferences ;
+    private String[] urls;
 
 
     @Override
@@ -117,7 +118,8 @@ public class VideoPlayActivity extends Activity {
         playerView=findViewById(R.id.playerView);
         URI uri;
         try {
-            uri = new URI("ws://192.168.0.179:8080/");
+            //uri = new URI("ws://192.168.0.179:8080/");
+            uri =new URI("ws://172.24.144.210:8000/ws/dispatcher/");
         } catch (URISyntaxException e) {
             e.printStackTrace();
             return;
@@ -135,7 +137,7 @@ public class VideoPlayActivity extends Activity {
             public void onMessage(String message) {
                 Log.i("WebSocket", "Message received: " + message);
                 if (message.startsWith("VideoURLs:")) {
-                    String[] urls = message.substring("VideoURLs:".length()).split(",");
+                    urls = message.substring("VideoURLs:".length()).split(",");
                     for (String url : urls) {
                         videoUrls.add(url.trim());
                     }
@@ -334,7 +336,7 @@ public class VideoPlayActivity extends Activity {
     //send image to websocket
     private void sendImage(byte[] image,int videoIndex,long relativeTime) {
         Runnable sendTask = () -> {
-            PredictionUser user = new PredictionUser("testUser1", image, age, gender,relativeTime,videoIndex);
+            PredictionUser user = new PredictionUser(urls,image,relativeTime,videoIndex);
             Gson gson = new Gson();
             String json = gson.toJson(user);
 
@@ -343,7 +345,7 @@ public class VideoPlayActivity extends Activity {
 
             if (webSocketClient != null && webSocketClient.isOpen()) {
                 Log.i("send","********start send*********");
-                webSocketClient.send(jsonBytes);
+                webSocketClient.send(prefixedJson);
             }
         };
         new Thread(sendTask).start();
