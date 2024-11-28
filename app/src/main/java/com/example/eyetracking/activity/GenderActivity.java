@@ -33,6 +33,8 @@ public class GenderActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         genderSpinner.setAdapter(adapter);
 
+
+
         // Setup the button to show age input dialog
         Button showDialogButton = findViewById(R.id.buttonShowAgeDialog); // Ensure this button is in your gender.xml layout
         showDialogButton.setOnClickListener(v -> showAgeDialog());
