@@ -20,6 +20,7 @@ import android.media.ImageReader;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -338,15 +339,24 @@ public class CalibrationreddotActivity extends AppCompatActivity {
 
 
     //reddot
-
     private void startDotSequence() {
         if (currentDotIndex < redDots.length) {
             redDots[currentDotIndex].setBackgroundColor(Color.YELLOW);
             redDots[currentDotIndex].setVisibility(View.VISIBLE);
             coordinates=new int[2];
-            redDots[currentDotIndex].getLocationOnScreen(coordinates);
-            // Start image capture when the red dot is displayed
-//            startImageCapture();
+            //redDots[currentDotIndex].getLocationOnScreen(coordinates);
+
+            //calculate coordinates to match the model
+            DisplayMetrics metrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
+            int screenHeight = metrics.heightPixels;
+
+            redDots[currentDotIndex].post(() -> {
+                redDots[currentDotIndex].getLocationOnScreen(coordinates);
+                coordinates[1] = screenHeight - coordinates[1];
+                Log.d("DotCoordinates", "Adjusted coordinates: (" + coordinates[0] + ", " + coordinates[1] + ")");
+            });
+
 
             new Handler().postDelayed(() -> {
                 // 红点亮起时开始拍照
@@ -375,6 +385,7 @@ public class CalibrationreddotActivity extends AppCompatActivity {
             }, 3000); // 3 seconds delay
         }
     }
+
     //Auto jump into VideoChoose Activity
     private void goToVideoChoose() {
         Intent intent = new Intent(CalibrationreddotActivity.this, VideoChooseActivity.class);
