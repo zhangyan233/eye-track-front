@@ -93,8 +93,8 @@ public class CalibrationreddotActivity extends AppCompatActivity {
 
         URI uri;
         try {
-            //uri = new URI("ws://192.168.0.179:8080/");
-            uri =new URI("ws://172.20.10.4:8000/ws/dispatcher/");
+            uri = new URI("ws://192.168.0.179:8080/");
+            //uri =new URI("ws://172.20.10.4:8000/ws/dispatcher/");
 
         } catch (URISyntaxException e) {
             e.printStackTrace();

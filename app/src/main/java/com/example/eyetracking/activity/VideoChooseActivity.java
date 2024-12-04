@@ -37,29 +37,27 @@ public class VideoChooseActivity extends Activity {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putInt("videoCount", videoCount);
             editor.apply();
+            Intent intent = new Intent(this, VideoPlayActivity.class);
+            startActivity(intent);
 
             Toast.makeText(this, "You selected: " + selectedVideo + ", which corresponds to " + videoCount + " video(s)", Toast.LENGTH_LONG).show();
         });
     }
 
     private int getVideoCount(String selectedVideo) {
-        if (selectedVideo.startsWith("Video ")) {
-            try {
-                int videoNumber = Integer.parseInt(selectedVideo.substring(6));
-                if (videoNumber >= 1 && videoNumber <= 10) {
-                    return videoNumber;
-                }
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            }
+
+        int videoNumber = Integer.parseInt(selectedVideo.trim());
+        if (videoNumber >= 1 && videoNumber <= 10) {
+            return videoNumber;
         }
+
         return 0;
     }
 
-    public void goToVideoPlay(View view) {
-        Intent intent = new Intent(this, VideoPlayActivity.class);
-        startActivity(intent);
-    }
+//    public void goToVideoPlay(View view) {
+//        Intent intent = new Intent(this, VideoPlayActivity.class);
+//        startActivity(intent);
+//    }
 
 
 }

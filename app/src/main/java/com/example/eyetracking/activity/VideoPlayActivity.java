@@ -124,8 +124,8 @@ public class VideoPlayActivity extends Activity {
         playerView=findViewById(R.id.playerView);
         URI uri;
         try {
-            //uri = new URI("ws://192.168.0.179:8080/");
-            uri =new URI("ws://172.20.10.4:8000/ws/dispatcher/");
+            uri = new URI("ws://192.168.0.179:8080/");
+            //uri =new URI("ws://172.20.10.4:8000/ws/dispatcher/");
         } catch (URISyntaxException e) {
             e.printStackTrace();
             return;
@@ -144,7 +144,7 @@ public class VideoPlayActivity extends Activity {
             public void onMessage(String message) {
                 Log.i("WebSocket", "Message received: " + message);
                 try {
-                    // 解析 JSON 数据
+                     //解析 JSON 数据
                     JSONObject jsonResponse = new JSONObject(message);
                     JSONArray urlsArray = jsonResponse.getJSONArray("video_urls");
 
@@ -155,6 +155,11 @@ public class VideoPlayActivity extends Activity {
                     for (int i = 0; i < urlsArray.length(); i++) {
                         videoUrls.add(urlsArray.getString(i).trim());
                     }
+//                    String[] urls = message.substring("VideoURLs:".length()).split(",");
+//                    for (String url : urls) {
+//                        videoUrls.add(url.trim());
+//                    }
+//                    runOnUiThread(() -> initializePlayer(videoUrls));
 
                     // 在主线程更新 UI
                     runOnUiThread(() -> initializePlayer(videoUrls));
@@ -179,8 +184,6 @@ public class VideoPlayActivity extends Activity {
 
     private void initialize() {
         startBackgroundThread();
-        startCameraCapture();
-
     }
 
     private void initializePlayer(List<String> videoUrls) {
@@ -196,9 +199,15 @@ public class VideoPlayActivity extends Activity {
         player.play();
 
         player.addListener(new ExoPlayer.Listener() {
+            private boolean isCaptured=false;
             @Override
             //Automatic jump to exit page.
             public void onPlaybackStateChanged(int playbackState) {
+                if(playbackState==ExoPlayer.STATE_READY&&player.getCurrentWindowIndex()==0&&!isCaptured){
+                    startCameraCapture();
+                    isCaptured=true;
+                }
+
                 if (playbackState == ExoPlayer.STATE_ENDED) {
                     stopImageCapture();
                     new Handler().postDelayed(() -> {
@@ -209,12 +218,7 @@ public class VideoPlayActivity extends Activity {
 
                 }
             }
-            //            public void onPlaybackStateChanged(int playbackState) {
-//                if (playbackState == ExoPlayer.STATE_ENDED) {
-//                    stopImageCapture();
-//
-//                }
-//            }
+
 
             @Override
             public void onPlayerError(ExoPlaybackException error) {
