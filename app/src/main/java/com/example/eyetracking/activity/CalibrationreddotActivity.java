@@ -20,6 +20,7 @@ import android.media.ImageReader;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -278,7 +279,8 @@ public class CalibrationreddotActivity extends AppCompatActivity {
     //send image to websocket
     private void sendImage(byte[] image) {
         Runnable sendTask = () -> {
-            CalibrationUser user = new CalibrationUser(image,coordinates);
+            String base64Image=Base64.encodeToString(image, Base64.DEFAULT);
+            CalibrationUser user = new CalibrationUser(base64Image,coordinates);
             Log.i("coordinates","x: "+coordinates[0]+" y: "+coordinates[1]);
             Gson gson = new Gson();
             String json = gson.toJson(user);

@@ -65,6 +65,7 @@ import java.util.concurrent.TimeUnit;
 
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.util.Base64;
 import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
@@ -358,7 +359,8 @@ public class VideoPlayActivity extends Activity {
     //send image to websocket
     private void sendImage(byte[] image,int videoIndex,long relativeTime) {
         Runnable sendTask = () -> {
-            PredictionUser user = new PredictionUser(videoUrls,image,relativeTime,videoIndex);
+            String base64Image= Base64.encodeToString(image,Base64.DEFAULT);
+            PredictionUser user = new PredictionUser(videoUrls,base64Image,relativeTime,videoIndex);
             Gson gson = new Gson();
             String json = gson.toJson(user);
 
