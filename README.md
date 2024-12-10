@@ -16,8 +16,8 @@ Communication between a WebSocket client and a server
   
   String prefixedJson = "C" + json;
   byte[] jsonBytes = prefixedJson.getBytes(StandardCharsets.UTF_8);
-## Example Code
 
+**普通文本：**
 - prediction: 
   - Require multiple video urls from server, send a String "RequestVideoURL" and the chosen amount
 ## Example Code
@@ -25,10 +25,10 @@ Communication between a WebSocket client and a server
     public void onOpen(ServerHandshake handshake) {
                   webSocketClient.send("RequestVideoURL:"+videoCount);
               }
-## Example Code
-
+**普通文本：**
   - Receive multiple video urls from server, response based on JSONObject
 ## Example Code
+    ```java
     JSONObject jsonResponse = new JSONObject(message);
     JSONArray urlsArray = jsonResponse.getJSONArray("video_urls");
     videoUrls.clear();
@@ -36,8 +36,8 @@ Communication between a WebSocket client and a server
     for (int i = 0; i < urlsArray.length(); i++) {
         videoUrls.add(urlsArray.getString(i).trim());
     }
- ## Example Code
-   
+
+**普通文本：**
   - Send PredictionUser object with a symbol 'P' to tell server it's an object from prediction step
   - Involve info: image(string),relativeTime(long),videoUrls(string[]),videoIndex(int)
 ## Example Code
@@ -49,4 +49,4 @@ Communication between a WebSocket client and a server
 
     String prefixedJson = "P" + json;
     byte[] jsonBytes = prefixedJson.getBytes(StandardCharsets.UTF_8);
-## Example Code
+
