@@ -16,6 +16,7 @@ Communication between a WebSocket client and a server
   
   String prefixedJson = "C" + json;
   byte[] jsonBytes = prefixedJson.getBytes(StandardCharsets.UTF_8);
+```
 
 **普通文本：**
 - prediction: 
