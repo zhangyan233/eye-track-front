@@ -26,6 +26,8 @@ Communication between a WebSocket client and a server
     public void onOpen(ServerHandshake handshake) {
         webSocketClient.send("RequestVideoURL:"+videoCount);
     }
+
+
     
   - Receive multiple video urls from server, response based on JSONObject
 ## Example Code
@@ -36,6 +38,8 @@ Communication between a WebSocket client and a server
     for (int i = 0; i < urlsArray.length(); i++) {
         videoUrls.add(urlsArray.getString(i).trim());
     }
+
+
     
   - Send PredictionUser object with a symbol 'P' to tell server it's an object from prediction step
   - Data: image(string),relativeTime(long),videoUrls(string[]),videoIndex(int)
