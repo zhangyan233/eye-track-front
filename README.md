@@ -22,11 +22,11 @@ Communication between a WebSocket client and a server
 - prediction: 
   - Require multiple video urls from server, send a String "RequestVideoURL" and the chosen amount
 ## Example Code
-    ```java
+    
     public void onOpen(ServerHandshake handshake) {
                   webSocketClient.send("RequestVideoURL:"+videoCount);
               }
-    ```
+    
   - Receive multiple video urls from server, response based on JSONObject
 ## Example Code
     ```java
