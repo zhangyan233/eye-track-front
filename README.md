@@ -6,7 +6,7 @@ Device Requirements: Support camera, video, audio
 
 Communication between a WebSocket client and a server
 - Calibration: client sends CalibrationUser object with a symbol 'C' to tell server it's an object from calibration step
-- Involve info: image(string),coordinates(int[])
+  Involve info: image(string),coordinates(int[])
 ## Example Code
 ```java
   String base64Image=Base64.encodeToString(image, Base64.DEFAULT);
@@ -18,7 +18,7 @@ Communication between a WebSocket client and a server
   byte[] jsonBytes = prefixedJson.getBytes(StandardCharsets.UTF_8);
 ```
 
-**普通文本：**
+
 - prediction: 
   - Require multiple video urls from server, send a String "RequestVideoURL" and the chosen amount
 ## Example Code
@@ -26,7 +26,7 @@ Communication between a WebSocket client and a server
     public void onOpen(ServerHandshake handshake) {
                   webSocketClient.send("RequestVideoURL:"+videoCount);
               }
-**普通文本：**
+    ```
   - Receive multiple video urls from server, response based on JSONObject
 ## Example Code
     ```java
@@ -37,8 +37,8 @@ Communication between a WebSocket client and a server
     for (int i = 0; i < urlsArray.length(); i++) {
         videoUrls.add(urlsArray.getString(i).trim());
     }
-
-**普通文本：**
+    ```
+    
   - Send PredictionUser object with a symbol 'P' to tell server it's an object from prediction step
   - Involve info: image(string),relativeTime(long),videoUrls(string[]),videoIndex(int)
 ## Example Code
@@ -50,4 +50,5 @@ Communication between a WebSocket client and a server
 
     String prefixedJson = "P" + json;
     byte[] jsonBytes = prefixedJson.getBytes(StandardCharsets.UTF_8);
+    ```
 
